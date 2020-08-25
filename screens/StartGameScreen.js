@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     Button,
     TouchableWithoutFeedback,
@@ -14,9 +13,10 @@ import DefaultStyles from '../constants/default-styles';
 
 import BodyText from '../components/Shared/BodyText';
 import TitleText from '../components/Shared/TitleText';
+import Input from '../components/Shared/Input';
+import MainButton from '../components/Shared/MainButton';
 
 import Card from '../components/Card';
-import Input from '../components/Input';
 import NumberContainer from '../components/NumberContainer';
 
 const StartGameScreen = props => {
@@ -58,7 +58,11 @@ const StartGameScreen = props => {
             <Card style={styles.summaryContainer}>
                 <BodyText>You selected</BodyText>
                 <NumberContainer>{selectedNumber}</NumberContainer>
-                <Button title="START GAME" onPress={() => props.onStartGame(selectedNumber)} />
+                <MainButton
+                    onPress={() => props.onStartGame(selectedNumber)}
+                >
+                    START GAME
+                </MainButton>
             </Card>
     }
 
@@ -67,7 +71,7 @@ const StartGameScreen = props => {
             Keyboard.dismiss();
         }}>
             <View style={[DefaultStyles.screen, styles.screen]}>
-                <TitleText style={styles.title}>Start New Game!</TitleText>
+                <TitleText style={styles.title}>Start New Game</TitleText>
                 <Card style={styles.inputContainer}>
                     <BodyText>Pick a number</BodyText>
                     <Input
