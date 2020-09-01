@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {
+    useState,
+    useEffect
+} from 'react';
+
 import {
     View,
     Text,
     StyleSheet,
-    Image
+    Image,
+    Dimensions,
+    ScrollView,
 } from 'react-native';
 
 import DefaultStyles from '../constants/default-styles';
@@ -14,47 +20,80 @@ import TitleText from '../components/Shared/TitleText';
 import MainButton from '../components/Shared/MainButton';
 
 const GameOverScreen = props => {
+    const [availableDeviceWidth, setAvailableDeviceWidth] = useState(
+        Dimensions.get('window').width
+    );
+    const [availableDeviceHeight, setAvailableDeviceHeight] = useState(
+        Dimensions.get('window').height
+    );
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setAvailableDeviceWidth(Dimensions.get('window').width);
+            setAvailableDeviceHeight(Dimensions.get('window').height);
+        };
+
+        Dimensions.addEventListener('change', updateLayout);
+
+        return () => {
+            Dimensions.removeEventListener('change', updateLayout);
+        };
+    });
+
     return (
-        <View style={[DefaultStyles.screen, styles.screen]}>
-            <TitleText>The Game is Over!</TitleText>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    resizeMode="cover"
-                    /* source={
-                        require('../assets/success.png')
-                    } */
-                    source={{
-                        uri: 'https://new-manager-training.com/wp-content/uploads/2016/08/accomplishment-reached-top-of-mountain.jpg'
-                    }}
-                />
-            </View>
-            <View style={styles.resultContainer}>
-                <BodyText style={styles.resultText}>
-                    Your phone needed{' '}
-                    <Text style={styles.highlight}>{props.roundsNumber}</Text> rounds
+        <ScrollView>
+            <View style={[DefaultStyles.screen, styles.screen]}>
+                <TitleText>The Game is Over!</TitleText>
+                <View style={{
+                    ...styles.imageContainer, ...{
+                        width: availableDeviceWidth * 0.6,
+                        height: availableDeviceWidth * 0.6,
+                        borderRadius: (availableDeviceWidth * 0.6) / 2,
+                        marginVertical: availableDeviceHeight / 30,
+                    }
+                }}>
+                    <Image
+                        style={styles.image}
+                        resizeMode="cover"
+                        /* source={
+                            require('../assets/success.png')
+                        } */
+                        source={{
+                            uri: 'https://new-manager-training.com/wp-content/uploads/2016/08/accomplishment-reached-top-of-mountain.jpg'
+                        }}
+                    />
+                </View>
+                <View style={{
+                    ...styles.resultContainer,
+                    ...{ marginVertical: availableDeviceHeight / 60 }
+                }}>
+                    <BodyText style={{
+                        ...styles.resultText,
+                        ...{ fontSize: availableDeviceHeight < 400 ? 16 : 20 }
+                    }}>
+                        Your phone needed{' '}
+                        <Text style={styles.highlight}>{props.roundsNumber}</Text> rounds
                     to guess the number{' '}
-                    <Text style={styles.highlight}>{props.userNumber}</Text>.
+                        <Text style={styles.highlight}>{props.userNumber}</Text>.
                 </BodyText>
+                </View>
+                <MainButton onPress={props.onRestart}>NEW GAME</MainButton>
             </View>
-            <MainButton onPress={props.onRestart}>NEW GAME</MainButton>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     screen: {
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        paddingVertical: 10,
     },
     imageContainer: {
-        width: 300,
-        height: 300,
-        borderRadius: 150,
         borderWidth: 3,
         borderColor: 'black',
         overflow: 'hidden',
-        marginVertical: 30,
     },
     image: {
         width: '100%',
@@ -66,11 +105,9 @@ const styles = StyleSheet.create({
     },
     resultContainer: {
         marginHorizontal: 30,
-        marginVertical: 15,
     },
     resultText: {
         textAlign: "center",
-        fontSize: 20,
     }
 });
 
